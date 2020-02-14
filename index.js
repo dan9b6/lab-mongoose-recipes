@@ -11,10 +11,40 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-  .then(() => {
-    console.log(`Connected to the database: "${x.connections[0].name}"`);
-    // Run your code here, after you have insured that the connection was made
+  .then(self => {
+    console.log(`Connected to the database: "${self.connections[0].name}"`);
+    return self.connection.dropDatabase();
   })
+  .then(() => {
+    return Recipe.create({
+      title: 'Chocolate City',
+      level: 'Easy Peasy',
+      ingredients: ['Chocolate', 'Vanilla Ice-cream', 'Waffles', 'Cookies'],
+      cuisine: 'American Junk',
+      duration: 25,
+      creator: 'Big Burts'
+    });
+  })
+  .then(recipe => {
+    //console.log(recipe);
+    console.log(recipe.title);
+    return Recipe.insertMany(data);
+  })
+
+  .then(() => {
+    return Recipe.updateOne({ title: 'Rigatoni alla Genovese' }, { duration: 100 });
+  })
+
+  .then(() => {
+    return Recipe.deleteOne({ title: 'Carrot Cake' });
+  })
+
+  .then(recipes => {
+    console.log('added all', recipes);
+  })
+
   .catch(error => {
     console.error('Error connecting to the database', error);
   });
+
+mongoose.connection.close();
